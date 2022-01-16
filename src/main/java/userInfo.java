@@ -198,11 +198,17 @@ public class userInfo {
         piggybankBalance += Amount;
             withdrawal(Amount);
             bank.depositTobank(Amount);
+            setCashInHand(cashInHand-Amount);
+            setPiggybankBalance(piggybankBalance+Amount);
+            setAmountWithdrawFromSavings(Amount);
     }
 
     public void recieveSavings(int Amount){
         bank.withdrawalFromBank(Amount);
         deposit(Amount);
+        setCashInHand(cashInHand+Amount);
+        setPiggybankBalance(piggybankBalance-Amount);
+        setAmountWithdrawFromSavings(0);
     }
 
     public String getEmailAddress() {

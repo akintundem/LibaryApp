@@ -1,3 +1,5 @@
+import java.util.Date;
+
 public class TestObj {
     private String firstName ;
     private String middleName;
@@ -10,6 +12,33 @@ public class TestObj {
     private int cashInHand = 0;
     private String userName;
     private int amountWithdrawFromSavings = 0;
+    private int piggybankBalance;
+    private Date firstSaveDate;
+    private Date lastSaveDate;
+
+    public int getPiggybankBalance() {
+        return piggybankBalance;
+    }
+
+    public void setPiggybankBalance(int piggybankBalance) {
+        this.piggybankBalance = piggybankBalance;
+    }
+
+    public Date getFirstSaveDate() {
+        return firstSaveDate;
+    }
+
+    public void setFirstSaveDate(Date firstSaveDate) {
+        this.firstSaveDate = firstSaveDate;
+    }
+
+    public Date getLastSaveDate() {
+        return lastSaveDate;
+    }
+
+    public void setLastSaveDate(Date lastSaveDate) {
+        this.lastSaveDate = lastSaveDate;
+    }
 
     public TestObj(){}
 

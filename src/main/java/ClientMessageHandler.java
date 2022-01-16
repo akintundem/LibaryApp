@@ -48,7 +48,7 @@ public class ClientMessageHandler implements FrameworkClientMessageInterface{
                 //theCommand = newuser/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("A new customer has been added to the bank");
                 myClientConnection.sendStringMessageToClient("A new customer has been added to the bank");
-                //bank.insert(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                bank.insert(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
                 break;
             case "viewuser":
                 //theCommand = viewuser/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount

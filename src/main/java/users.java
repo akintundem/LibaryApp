@@ -1,6 +1,8 @@
 import com.mongodb.*;
 
 import java.net.UnknownHostException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 class users{
     private userInfo[] allUsers;
@@ -15,14 +17,14 @@ class users{
 
 
 
-    public users(int size) throws UnknownHostException {
+    public users(int size) throws UnknownHostException, ParseException {
         size = primeOutput(size);
         this.size = size;
         this.allUsers = new userInfo[size];
         startmongoDB();
     }
 
-    public void startmongoDB() throws UnknownHostException{
+    public void startmongoDB() throws UnknownHostException, ParseException {
         this.mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
         this.database = mongoClient.getDB("bankUsers");
         this.test = database.getCollection("bankUser");
@@ -118,7 +120,7 @@ class users{
                        String emailAddress,
                        int phoneNumber,
                        String country,
-                       int sinNumber){
+                       int sinNumber) throws ParseException {
         emailAddress= emailAddress.toLowerCase();
         userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber);
         if (!search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber)) { // if the word is not empty or not a duplicate.
@@ -152,6 +154,9 @@ class users{
         testObj.setCashInHand(0);
         testObj.setUserName(userName);
         testObj.setAmountWithdrawFromSavings(0);
+        testObj.setPiggybankBalance(0);
+        testObj.setLastSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022+"/"+01+"/"+01));
+        testObj.setFirstSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022+"/"+01+"/"+01));
         test.insert(convert(testObj));
     } // Working
 
@@ -262,12 +267,6 @@ class users{
         }
         return "Unsuccessful Transaction";
     } //transfer
-
-    public void savings(){
-        for(int i = 0; i < allUsers.length; i++){
-            userInfo saver = allUsers[i];
-        }
-    }//savings
 
     private String manageSavings(userInfo user){
         String status = " ";
