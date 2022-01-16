@@ -34,7 +34,7 @@ class users{
         while (cursor.hasNext()) {
             DBObject obj = cursor.one();
             insert((String) obj.get("firstName"),(String) obj.get("userName"),(String)obj.get("middleName"), (String)obj.get("lastName")
-                    ,(String)obj.get("emailAddress"),(Integer) obj.get("phoneNumber"),(String) obj.get("country"),(Integer) obj.get("sinNumber"));
+                    ,(String)obj.get("emailAddress"),(Integer) obj.get("phoneNumber"),(String) obj.get("country"),(Integer) obj.get("sinNumber"), (String) obj.get("Password"));
             cursor.next();
         }
     }
@@ -50,7 +50,8 @@ class users{
                 .append("sinNumber",testObj.getSinNumber())
                 .append("cashInHand",testObj.getCashInHand())
                 .append("userName",testObj.getUserName())
-                .append("amountWithdrawFromSavings",testObj.getAmountWithdrawFromSavings());
+                .append("amountWithdrawFromSavings",testObj.getAmountWithdrawFromSavings())
+                .append("Password",testObj.getPassword());
     }
 
     private int primeOutput(int size){
@@ -120,10 +121,11 @@ class users{
                        String emailAddress,
                        int phoneNumber,
                        String country,
-                       int sinNumber) throws ParseException {
+                       int sinNumber,
+                       String Password) throws ParseException {
         emailAddress= emailAddress.toLowerCase();
-        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber);
-        if (!search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber)) { // if the word is not empty or not a duplicate.
+        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password);
+        if (!search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password)) { // if the word is not empty or not a duplicate.
             if(loadfactor < 0.6){
                 inserter(allUsers,emailAddress, allUsers.length, newUserInfo);
                 count++;
@@ -157,6 +159,7 @@ class users{
         testObj.setPiggybankBalance(0);
         testObj.setLastSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022+"/"+01+"/"+01));
         testObj.setFirstSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022+"/"+01+"/"+01));
+        testObj.setPassword(Password);
         test.insert(convert(testObj));
     } // Working
 
@@ -168,17 +171,18 @@ class users{
             String emailAddress,
             int phoneNumber,
             String country,
-            int sinNumber
+            int sinNumber,
+            String Password
     ) {
         emailAddress = emailAddress.toLowerCase();
-        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber);
-        if (search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber)) { // if the word is not empty or not a duplicate.
+        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password);
+        if (search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password)) { // if the word is not empty or not a duplicate.
             final int CONSTANT = 41;
             int IntegerHash = hornerMethod(emailAddress, allUsers.length);
             int insert = (IntegerHash% allUsers.length)% allUsers.length;
             int i =1;
             if(allUsers[insert].equals(newUserInfo)){
-                allUsers[insert] = new userInfo("N/A","N/A","N/A","N/A","N/A",0,"N/A", 0);
+                allUsers[insert] = new userInfo("N/A","N/A","N/A","N/A","N/A",0,"N/A", 0,"N/A");
                 count--;
                 loadfactor = count/ allUsers.length;
             } else {
@@ -189,7 +193,7 @@ class users{
                         insert = insert - allUsers.length;
                     }
                     if(allUsers[insert].equals(newUserInfo)){
-                        allUsers[insert] = new userInfo("N/A","N/A","N/A","N/A","N/A",0,"N/A", 0);
+                        allUsers[insert] = new userInfo("N/A","N/A","N/A","N/A","N/A",0,"N/A", 0,"N/A");
                         count--;
                         loadfactor = count/ allUsers.length;
                     }
@@ -198,7 +202,7 @@ class users{
         }
         test.findAndRemove(new BasicDBObject("firstName",firstName).append("userName",userName)
         .append("middleName",middleName).append("lastName",lastName).append("emailAddress",emailAddress)
-        .append("phoneNumber",phoneNumber).append("country",country).append("sinNumber",sinNumber));
+        .append("phoneNumber",phoneNumber).append("country",country).append("sinNumber",sinNumber).append("Passwprd",Password));
     } // working
 
     public userInfo retrieve(String firstName,
@@ -208,9 +212,10 @@ class users{
                              String emailAddress,
                              int phoneNumber,
                              String country,
-                             int sinNumber){
+                             int sinNumber,
+                             String Password){
         emailAddress = emailAddress.toLowerCase();
-        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber);
+        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber, Password);
         int constant = 41;
         int IntegerHash = hornerMethod(emailAddress, allUsers.length);
         int insert = IntegerHash% allUsers.length;
@@ -242,8 +247,9 @@ class users{
                           String emailAddress,
                           int phoneNumber,
                           String country,
-                          int sinNumber){
-        return retrieve(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber) != null;
+                          int sinNumber,
+                          String Password){
+        return retrieve(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password) != null;
     } //working
 
 
@@ -255,14 +261,14 @@ class users{
 
     public String transferTransaction(userInfo sender, userInfo receiver, int amount){
         if(search(sender.getFirstName(), sender.getUserName(), sender.getMiddleName(),sender.getLastName(),sender.getEmailAddress(),
-                sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber())
+                sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber(),sender.getPassword())
                 && search(receiver.getFirstName(),receiver.getUserName(),receiver.getMiddleName(),receiver.getLastName(),
                 receiver.getEmailAddress(),receiver.getPhoneNumber(),receiver.getCountry(),
-                receiver.getSinNumber())){
+                receiver.getSinNumber(),receiver.getPassword())){
             retrieve(sender.getFirstName(),sender.getUserName(),sender.getMiddleName(),sender.getLastName(),sender.getEmailAddress(),
-                    sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber()).withdrawal(amount);
+                    sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber(),sender.getPassword()).withdrawal(amount);
             retrieve(sender.getFirstName(),receiver.getUserName(),sender.getMiddleName(),sender.getLastName(),sender.getEmailAddress(),
-                    sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber()).deposit(amount);
+                    sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber(),sender.getPassword()).deposit(amount);
             return "Transaction from " + sender.getUserName() + " to " + receiver.getUserName() + "is successful";
         }
         return "Unsuccessful Transaction";

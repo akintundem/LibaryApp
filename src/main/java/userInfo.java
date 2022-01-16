@@ -18,6 +18,7 @@ public class userInfo {
     private int piggybankBalance;
     private Date firstSaveDate;
     private Date lastSaveDate;
+    private String Password;
     admin bank;
 
     public void update(String firstName,String middleName, String lastName, String emailAddress, int phoneNumber,  String country, int sinNumber, int cashInHand, String userName, int amountWithdrawFromSavings,  int piggybankBalance, Date firstSaveDate , Date lastSaveDate){
@@ -129,6 +130,14 @@ public class userInfo {
         return userName;
     }
 
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
     public userInfo(String firstName,
                     String userName,
                     String middleName,
@@ -136,7 +145,8 @@ public class userInfo {
                     String emailAddress,
                     int phoneNumber,
                     String country,
-                    int sinNumber){
+                    int sinNumber,
+                    String Password){
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
@@ -145,6 +155,7 @@ public class userInfo {
         this.country = country;
         this.userName = userName;
         this.sinNumber = sinNumber;
+        this.Password = Password;
     }
     public int deposit(int depositAmount){
         cashInHand += depositAmount;

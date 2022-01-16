@@ -1,4 +1,5 @@
 import java.net.UnknownHostException;
+import java.text.ParseException;
 
 public class admin {
 
@@ -10,7 +11,7 @@ public class admin {
         this.nameOfApp = nameOfApp;
     }
 
-    public void runApp() throws UnknownHostException {
+    public void runApp() throws UnknownHostException, ParseException {
         ledger = new users(100); //start a ledger
     }
 

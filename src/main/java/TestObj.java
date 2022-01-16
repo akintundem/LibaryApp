@@ -16,6 +16,16 @@ public class TestObj {
     private Date firstSaveDate;
     private Date lastSaveDate;
 
+    public String getPassword() {
+        return Password;
+    }
+
+    public void setPassword(String password) {
+        Password = password;
+    }
+
+    private String Password;
+
     public int getPiggybankBalance() {
         return piggybankBalance;
     }

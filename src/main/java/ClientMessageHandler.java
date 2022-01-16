@@ -48,7 +48,7 @@ public class ClientMessageHandler implements FrameworkClientMessageInterface{
                 //theCommand = newuser/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("A new customer has been added to the bank");
                 myClientConnection.sendStringMessageToClient("A new customer has been added to the bank");
-                bank.insert(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                //bank.insert(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
                 break;
             case "viewuser":
                 //theCommand = viewuser/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
@@ -63,31 +63,31 @@ public class ClientMessageHandler implements FrameworkClientMessageInterface{
                 //theCommand = delete/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("Delete customer");
                 myClientConnection.sendStringMessageToClient("Delete customer");
-                bank.delete(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                //bank.delete(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
                 break;
             case "exist":
                 //theCommand = exist/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("Checking Operation on going");
                 myClientConnection.sendStringMessageToClient("Checking Operation on going");
-                bank.search(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                //bank.search(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
                 break;
             case "withdraw":
                 //theCommand = withdraw/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("Withdrawal Operation on going");
                 myClientConnection.sendStringMessageToClient("Withdrawal Operation on going");
-                bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).withdrawal(Integer.parseInt(infoClient[9]));
+                //bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).withdrawal(Integer.parseInt(infoClient[9]));
                 break;
             case "deposit":
                 //theCommand = deposit/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("Deposit Operation on going");
                 myClientConnection.sendStringMessageToClient("Deposit Operation on going");
-                bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).deposit(Integer.parseInt(infoClient[9]));
+                //bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).deposit(Integer.parseInt(infoClient[9]));
                 break;
             case "balance":
                 //theCommand = balance/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("Balance Operation on going");
                 myClientConnection.sendStringMessageToClient("Balance Operation on going");
-                bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).balance();
+                //bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).balance();
                 break;
             case "transfer":
                 //theCommand = transfer/FirstNameS/UserNameS/MiddleNameS/LastNameS/PhoneNumberS/CountryS/sinNumberS
@@ -101,7 +101,7 @@ public class ClientMessageHandler implements FrameworkClientMessageInterface{
                 //              year/month/day/Amount
                 myServer.sendMessageToUI("Saving Operation on going");
                 myClientConnection.sendStringMessageToClient("Saving Operation on going");
-                bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).saveInPiggyBank(Integer.parseInt(infoClient[9]),0,0,0);
+                //bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8])).saveInPiggyBank(Integer.parseInt(infoClient[9]),0,0,0);
                 break;
             default:
                 break;
