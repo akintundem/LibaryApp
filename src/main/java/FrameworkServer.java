@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -39,7 +40,7 @@ public class FrameworkServer implements Runnable{
                 //turn on admin
                 administrator = new admin("Liberty");
                 administrator.runApp();
-            } catch (IOException e) {
+            } catch (IOException | ParseException e) {
                 sendMessageToUI("Cannot create ServerSocket, because " + e +". try again.");
                 //System.exit(0);
             } finally {

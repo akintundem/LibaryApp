@@ -228,6 +228,6 @@ public class userInfo {
 
     public String toString(){
         return "Customer Name: " + firstName + " " + lastName + "\n" + "Email Address: " + emailAddress + "\n"
-                + "Country: " + country + "\n" + "Account Balance " + balance();
+                + "Country: " + country + "\n" + "Account Balance " + balance()+ "\n" + "Password: "+ Password;
     }
 }

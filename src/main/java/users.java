@@ -1,5 +1,6 @@
 import com.mongodb.*;
 
+import javax.swing.text.Document;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,6 @@ class users{
         this.mongoClient = new MongoClient(new MongoClientURI("mongodb://localhost:27017"));
         this.database = mongoClient.getDB("bankUsers");
         this.test = database.getCollection("bankUser");
-        System.out.println("Here they are");
         //fill in users from mongo into allUsers
         DBCursor cursor = test.find();
         while (cursor.hasNext()) {
@@ -37,6 +37,11 @@ class users{
                     ,(String)obj.get("emailAddress"),(Integer) obj.get("phoneNumber"),(String) obj.get("country"),(Integer) obj.get("sinNumber"), (String) obj.get("Password"));
             cursor.next();
         }
+    }
+
+    public userInfo find(String userName, String Password){
+        BasicDBObject val = (BasicDBObject) test.findOne(new BasicDBObject("userName",userName).append("Password",Password));
+        return retrieve(val.getString("firstName"),val.getString("userName"),val.getString("middleName"),val.getString("lastName"),val.getString("emailAddress"),val.getInt("phoneNumber"),val.getString("country"),val.getInt("sinNumber"),val.getString("Password"));
     }
 
 

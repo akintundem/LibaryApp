@@ -45,17 +45,16 @@ public class ClientMessageHandler implements FrameworkClientMessageInterface{
         }
         switch (infoClient[0]) {
             case "newuser":
-                //theCommand = newuser/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
+                //theCommand = newuser/FirstName/MiddleName/LastName/emailAddress/PhoneNumber/Country/Password/Username
                 myServer.sendMessageToUI("A new customer has been added to the bank");
                 myClientConnection.sendStringMessageToClient("A new customer has been added to the bank");
-                //bank.insert(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                bank.insert(infoClient[1],infoClient[8],infoClient[2],infoClient[3],infoClient[4],Integer.parseInt(infoClient[5]),infoClient[6],0,infoClient[7]);
                 break;
             case "viewuser":
-                //theCommand = viewuser/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
-                System.out.println("Hi");
+                //theCommand = viewuser/UserName/Password
                 myServer.sendMessageToUI("Searching for customer");
                 myClientConnection.sendStringMessageToClient("Searching for customer");
-                //bank.retrieve(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                bank.find(infoClient[1],infoClient[2]);
                 myClientConnection.sendStringMessageToClient("Mayokun/Akintunde/220/90");
                 myClientConnection.sendMessageToClient((byte) 0xFF);
                 break;
