@@ -35,7 +35,7 @@ class users{
 
     public userInfo find(String userName, String Password){
         BasicDBObject val = (BasicDBObject) test.findOne(new BasicDBObject("userName",userName).append("Password",Password));
-        return retrieve(val.getString("firstName"),val.getString("userName"),val.getString("middleName"),val.getString("lastName"),val.getString("emailAddress"),val.getInt("phoneNumber"),val.getString("country"),val.getInt("sinNumber"),val.getString("Password"));
+        return retrieve(val.getString("emailAddress"));
     }
 
 
@@ -63,9 +63,8 @@ class users{
                        String country,
                        int sinNumber,
                        String Password) throws ParseException {
-        emailAddress= emailAddress.toLowerCase();
         userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password);
-        if(search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password)) {
+        if(!search(emailAddress)) {
             bankusers.put(emailAddress,newUserInfo);
             //Insert to MongoDB
             testObj.setFirstName(firstName);
@@ -87,63 +86,33 @@ class users{
     } // Working
 
     public void delete(
-            String firstName,
             String userName,
-            String middleName,
-            String lastName,
-            String emailAddress,
-            int phoneNumber,
-            String country,
-            int sinNumber,
             String Password
     ) {
-        emailAddress = emailAddress.toLowerCase();
-        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password);
-        bankusers.remove(emailAddress,newUserInfo);
-        test.findAndRemove(new BasicDBObject("firstName",firstName).append("userName",userName)
-        .append("middleName",middleName).append("lastName",lastName).append("emailAddress",emailAddress)
-        .append("phoneNumber",phoneNumber).append("country",country).append("sinNumber",sinNumber).append("Passwprd",Password));
+        userInfo userInfo = find(userName,Password);
+        bankusers.remove(userInfo.getEmailAddress());
+        test.findAndRemove(new BasicDBObject("firstName",userInfo.getFirstName()).append("userName",userInfo.getUserName())
+        .append("middleName",userInfo.getMiddleName()).append("lastName",userInfo.getLastName()).append("emailAddress",userInfo.getEmailAddress())
+        .append("phoneNumber",userInfo.getPhoneNumber()).append("country",userInfo.getCountry()).append("sinNumber",userInfo.getSinNumber()).append("Passwprd",Password));
     } // working
 
-    public userInfo retrieve(String firstName,
-                             String userName,
-                             String middleName,
-                             String lastName,
-                             String emailAddress,
-                             int phoneNumber,
-                             String country,
-                             int sinNumber,
-                             String Password){
+    public userInfo retrieve(String emailAddress){
         emailAddress = emailAddress.toLowerCase();
-        userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber, Password);
         return bankusers.get(emailAddress);
     } // working
 
 
 
-    public boolean search(String firstName,
-                          String userName,
-                          String middleName,
-                          String lastName,
-                          String emailAddress,
-                          int phoneNumber,
-                          String country,
-                          int sinNumber,
-                          String Password){
-        return retrieve(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password) != null;
+    public boolean search(String emailAddress){
+        return retrieve(emailAddress) != null;
     } //working
     //Liberty features
 
     public String transferTransaction(userInfo sender, userInfo receiver, int amount){
-        if(search(sender.getFirstName(), sender.getUserName(), sender.getMiddleName(),sender.getLastName(),sender.getEmailAddress(),
-                sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber(),sender.getPassword())
-                && search(receiver.getFirstName(),receiver.getUserName(),receiver.getMiddleName(),receiver.getLastName(),
-                receiver.getEmailAddress(),receiver.getPhoneNumber(),receiver.getCountry(),
-                receiver.getSinNumber(),receiver.getPassword())){
-            retrieve(sender.getFirstName(),sender.getUserName(),sender.getMiddleName(),sender.getLastName(),sender.getEmailAddress(),
-                    sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber(),sender.getPassword()).withdrawal(amount);
-            retrieve(sender.getFirstName(),receiver.getUserName(),sender.getMiddleName(),sender.getLastName(),sender.getEmailAddress(),
-                    sender.getPhoneNumber(),sender.getCountry(),sender.getSinNumber(),sender.getPassword()).deposit(amount);
+        if(search(sender.getEmailAddress())
+                && search(receiver.getEmailAddress())){
+            retrieve(sender.getEmailAddress()).withdrawal(amount);
+            retrieve(sender.getEmailAddress()).deposit(amount);
             return "Transaction from " + sender.getUserName() + " to " + receiver.getUserName() + "is successful";
         }
         return "Unsuccessful Transaction";

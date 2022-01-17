@@ -14,6 +14,8 @@ public class admin {
     public void runApp() throws UnknownHostException, ParseException {
         ledger = new users(); //start a ledger
         ledger.insert("Mayokun","mos","Moses","Akintunde","akintundemayokun@gmail.com",2045145629,"Nigeria",8923892,"kokko");
+        //System.out.println(ledger.find("Mayokun","kokko"));
+        System.out.println(ledger);
     }
 
     public void withdrawalFromBank(int Amount){

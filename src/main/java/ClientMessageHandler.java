@@ -62,7 +62,7 @@ public class ClientMessageHandler implements FrameworkClientMessageInterface{
                 //theCommand = delete/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
                 myServer.sendMessageToUI("Delete customer");
                 myClientConnection.sendStringMessageToClient("Delete customer");
-                //bank.delete(infoClient[1],infoClient[2],infoClient[3],infoClient[4],infoClient[5],Integer.parseInt(infoClient[6]),infoClient[7],Integer.parseInt(infoClient[8]));
+                bank.delete(infoClient[1],infoClient[2]);
                 break;
             case "exist":
                 //theCommand = exist/FirstName/UserName/MiddleName/LastName/emailAddress/PhoneNumber/Country/sinNumber/Amount
