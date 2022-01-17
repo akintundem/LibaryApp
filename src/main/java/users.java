@@ -4,13 +4,10 @@ import javax.swing.text.Document;
 import java.net.UnknownHostException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
+
 class users{
-    private userInfo[] allUsers;
-    private userInfo[] temp;
-    private int size;
-    private int count;
-    private float loadfactor = 0;
+    HashMap<String,userInfo> bankusers = new HashMap<String,userInfo>();
     public static MongoClient mongoClient;
     public static DB database;
     public static DBCollection test;
@@ -18,10 +15,7 @@ class users{
 
 
 
-    public users(int size) throws UnknownHostException, ParseException {
-        size = primeOutput(size);
-        this.size = size;
-        this.allUsers = new userInfo[size];
+    public users() throws UnknownHostException, ParseException {
         startmongoDB();
     }
 
@@ -59,65 +53,6 @@ class users{
                 .append("Password",testObj.getPassword());
     }
 
-    private int primeOutput(int size){
-        while (!prime(size)){
-            size++;
-        }
-        return size;
-    }
-
-    private boolean prime(int size){
-        int j =2;
-        while (j*j <= size){
-            if(size%j == 0){
-                return false;
-            }
-            j++;
-        }
-        return true;
-    }
-
-    private int hornerMethod(String emailAddress,int newArraySize){
-        final int CONSTANT = 27;
-        int sum =0;
-        for(int i =0; i<=emailAddress.length()-1; i++){
-            if((int) emailAddress.charAt(i)>=96 && (int) emailAddress.charAt(i) <=122) {
-                sum += ((int) emailAddress.charAt(i) - 96);
-            }
-            if(i != emailAddress.length()-1) {
-                sum = (sum * CONSTANT)%newArraySize;
-            }
-        }
-        return sum;
-    }
-
-    private int compressionMap(userInfo[] userInfos, String emailAddress, int newArraySize){
-        final int CONSTANT = 41;
-        emailAddress = emailAddress.toLowerCase();
-        int IntegerHash = hornerMethod(emailAddress,newArraySize);
-        int insert = (IntegerHash%newArraySize)%newArraySize;
-        int i =1;
-        while (userInfos[insert] != null && userInfos[insert].getEmailAddress().compareTo("N/A") != 0){
-            insert = (IntegerHash%newArraySize + (i * (CONSTANT - IntegerHash%CONSTANT)) % newArraySize); //main focus
-            i++;
-            if(insert > newArraySize-1){
-                insert = insert - newArraySize;
-            }
-        }
-        return insert;
-    }
-
-
-    private void inserter(userInfo[] userInfos, String emailAddress, int newArraySize, userInfo userinfo){
-        userInfos[compressionMap(userInfos,emailAddress,newArraySize)] = userinfo;
-    }
-
-    private boolean initialSearch(int insert, userInfo newUserInfo){
-        if(allUsers[insert] != null && allUsers[insert].equals(newUserInfo)) {
-            return true;
-        }
-        return false;
-    }
 
     public void insert(String firstName,
                        String userName,
@@ -130,42 +65,25 @@ class users{
                        String Password) throws ParseException {
         emailAddress= emailAddress.toLowerCase();
         userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password);
-        if (!search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password)) { // if the word is not empty or not a duplicate.
-            if(loadfactor < 0.6){
-                inserter(allUsers,emailAddress, allUsers.length, newUserInfo);
-                count++;
-                loadfactor = count/ allUsers.length;
-            } else {
-                size = primeOutput(allUsers.length * 2);
-                temp = new userInfo[size];
-                for (int i = 0; i < allUsers.length; i++) {
-                    if(allUsers[i] != null){
-                        inserter(temp, allUsers[i].getEmailAddress(),size, allUsers[i]);
-                    }
-                } // used to increase the hash table and rehash all words again.
-                allUsers = new userInfo[primeOutput(size)];
-                allUsers = temp;
-                inserter(allUsers,emailAddress,size, newUserInfo);
-                count++;
-                loadfactor = count/ allUsers.length;
-            }
+        if(search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password)) {
+            bankusers.put(emailAddress,newUserInfo);
+            //Insert to MongoDB
+            testObj.setFirstName(firstName);
+            testObj.setMiddleName(middleName);
+            testObj.setLastName(lastName);
+            testObj.setEmailAddress(emailAddress);
+            testObj.setPhoneNumber(phoneNumber);
+            testObj.setCountry(country);
+            testObj.setSinNumber(sinNumber);
+            testObj.setCashInHand(0);
+            testObj.setUserName(userName);
+            testObj.setAmountWithdrawFromSavings(0);
+            testObj.setPiggybankBalance(0);
+            testObj.setLastSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022 + "/" + 01 + "/" + 01));
+            testObj.setFirstSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022 + "/" + 01 + "/" + 01));
+            testObj.setPassword(Password);
+            test.insert(convert(testObj));
         }
-        //Insert to MongoDB
-        testObj.setFirstName(firstName);
-        testObj.setMiddleName(middleName);
-        testObj.setLastName(lastName);
-        testObj.setEmailAddress(emailAddress);
-        testObj.setPhoneNumber(phoneNumber);
-        testObj.setCountry(country);
-        testObj.setSinNumber(sinNumber);
-        testObj.setCashInHand(0);
-        testObj.setUserName(userName);
-        testObj.setAmountWithdrawFromSavings(0);
-        testObj.setPiggybankBalance(0);
-        testObj.setLastSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022+"/"+01+"/"+01));
-        testObj.setFirstSaveDate(new SimpleDateFormat("yyyy/MM/dd").parse(2022+"/"+01+"/"+01));
-        testObj.setPassword(Password);
-        test.insert(convert(testObj));
     } // Working
 
     public void delete(
@@ -181,30 +99,7 @@ class users{
     ) {
         emailAddress = emailAddress.toLowerCase();
         userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password);
-        if (search(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password)) { // if the word is not empty or not a duplicate.
-            final int CONSTANT = 41;
-            int IntegerHash = hornerMethod(emailAddress, allUsers.length);
-            int insert = (IntegerHash% allUsers.length)% allUsers.length;
-            int i =1;
-            if(allUsers[insert].equals(newUserInfo)){
-                allUsers[insert] = new userInfo("N/A","N/A","N/A","N/A","N/A",0,"N/A", 0,"N/A");
-                count--;
-                loadfactor = count/ allUsers.length;
-            } else {
-                while (allUsers[insert] != null && allUsers[insert].getEmailAddress().compareTo("N/A") != 0){
-                    insert = (IntegerHash% allUsers.length + (i * (CONSTANT - IntegerHash%CONSTANT)) % allUsers.length); //main focus
-                    i++;
-                    if(insert > allUsers.length-1){
-                        insert = insert - allUsers.length;
-                    }
-                    if(allUsers[insert].equals(newUserInfo)){
-                        allUsers[insert] = new userInfo("N/A","N/A","N/A","N/A","N/A",0,"N/A", 0,"N/A");
-                        count--;
-                        loadfactor = count/ allUsers.length;
-                    }
-                }
-            }
-        }
+        bankusers.remove(emailAddress,newUserInfo);
         test.findAndRemove(new BasicDBObject("firstName",firstName).append("userName",userName)
         .append("middleName",middleName).append("lastName",lastName).append("emailAddress",emailAddress)
         .append("phoneNumber",phoneNumber).append("country",country).append("sinNumber",sinNumber).append("Passwprd",Password));
@@ -221,26 +116,7 @@ class users{
                              String Password){
         emailAddress = emailAddress.toLowerCase();
         userInfo newUserInfo = new userInfo(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber, Password);
-        int constant = 41;
-        int IntegerHash = hornerMethod(emailAddress, allUsers.length);
-        int insert = IntegerHash% allUsers.length;
-        int i =1;
-        if(initialSearch(insert, newUserInfo)){
-            return allUsers[insert];
-        } else{
-            while (allUsers[insert] != null) {
-                insert = (IntegerHash % allUsers.length + (i * (constant - IntegerHash % constant)) % allUsers.length); //main focus
-                i++;
-                if (insert > allUsers.length - 1) {
-                    insert = insert - allUsers.length;
-                }
-
-                if (allUsers[insert] != null && allUsers[insert].equals(newUserInfo)) {
-                    return allUsers[insert];
-                }
-            }
-        }
-        return null;
+        return bankusers.get(emailAddress);
     } // working
 
 
@@ -256,12 +132,6 @@ class users{
                           String Password){
         return retrieve(firstName, userName, middleName, lastName, emailAddress, phoneNumber, country, sinNumber,Password) != null;
     } //working
-
-
-    public boolean Empty(){
-        return count==0;
-    } //working
-
     //Liberty features
 
     public String transferTransaction(userInfo sender, userInfo receiver, int amount){
@@ -296,10 +166,11 @@ class users{
     }
 
     public String toString(){
-        String answer ="";
-        for(int i = 0; i < allUsers.length; i++){
-            answer += i +"-->"+ allUsers[i] +"\n";
+        String answer = "";
+        Collection<userInfo> collection = bankusers.values();
+        for(Iterator<userInfo> iterator = collection.iterator(); iterator.hasNext();){
+            answer+=iterator.next() + "\n";
         }
         return answer;
-    } // working
+    }
 }

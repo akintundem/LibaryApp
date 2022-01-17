@@ -227,7 +227,8 @@ public class userInfo {
     }
 
     public String toString(){
-        return "Customer Name: " + firstName + " " + lastName + "\n" + "Email Address: " + emailAddress + "\n"
-                + "Country: " + country + "\n" + "Account Balance " + balance()+ "\n" + "Password: "+ Password;
+        return firstName + "|" + middleName + "|" + lastName + "|" + emailAddress + "|" + phoneNumber + "|" + country
+                + "|" +sinNumber + "|" +cashInHand + "|" + userName + "|" + amountWithdrawFromSavings
+                + "|" + piggybankBalance + "|" + firstSaveDate + "|" + lastSaveDate + "|" + Password;
     }
 }
